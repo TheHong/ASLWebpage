@@ -2,6 +2,7 @@
 
 <!DOCTYPE html>
 <html>
+<meta charset="utf-8">
 <title>Test screen</title>
 <style>
     /* Dropdown Button ==================================================*/
@@ -70,15 +71,18 @@
     }
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="wordData.js"></script>
 <script src="searchLogic.js"></script>
 </head>
 
 <body>
-    <input type="text" placeholder="Search.." id="searchField" onkeyup="filterFunction()">
+    <div id="theSearchBar"></div>
     <div id="theDropdown" class="dropdown-content">
     </div>
-
-
 </body>
+<script>
+    var searcher = new Searcher();
+    searcher.createBar();
+</script>
 
 </html>
