@@ -78,9 +78,15 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-
+        class Word {
+            constructor(english, chinese, url) {
+                this.english = english;
+                this.chinese = chinese;
+                this.url = url;
+            }
+        }
         function filterFunction() {
-            var items = ["about", "b"]; // <-- To be replaced by the 
+            var words = [new Word("About", "TEMP", "url1"), new Word("BB", "TEMP", "url2")];
             var noResultStr = "No Translation Available";
             var isResultExist = 0;
             var dropdown = document.getElementById("theDropdown");
@@ -92,9 +98,9 @@
 
             // Show items that are relevant to the user input
             if (input != "") {
-                for (i = 0; i < items.length; i++) {
-                    if (items[i].toUpperCase().indexOf(input.toUpperCase()) > -1 && input != noResultStr) {
-                        showItem(items[i], dropdown);
+                for (i = 0; i < words.length; i++) {
+                    if (words[i].english.toUpperCase().indexOf(input.toUpperCase()) > -1 && input != noResultStr) {
+                        showItem(words[i], dropdown);
                         isResultExist = 1;
                     }
                 }
@@ -103,12 +109,12 @@
                 }
             }
         }
-        function showItem(item, dropdown) {
+        function showItem(word, dropdown) {
             var newItem = document.createElement('a');
-            var newLabel = document.createTextNode(item);
+            var newLabel = document.createTextNode(word.english);
             newItem.appendChild(newLabel);
-            newItem.title = "TODO: ADD HOVER TITLE";
-            // newItem.href = "http://example.com";
+            newItem.title = word.chinese;
+            // newItem.href = word.url;
             dropdown.appendChild(newItem);
         }
     </script>
