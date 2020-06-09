@@ -14,22 +14,35 @@ class Searcher {
 
     filterFunction() {
         var noResultStr = "No Translation Available";
-        var numShown = 0;
+        var hasResult = 0;
         var dropdown = document.getElementById("theDropdown");
         var input = document.getElementById("searchField").value;
+        var priorityWords = [], similarWords = [];
 
         this.clearDropdown();
 
         // Show items that are relevant to the user input
         if (input != "") {
-            for (var i = 0; i < this.words.length && numShown <= this.maxDropdownSize; i++) {
+            for (var i = 0; i < this.words.length && priorityWords.length <= this.maxDropdownSize; i++) {
                 if (this.words[i].english.toUpperCase().indexOf(input.toUpperCase()) > -1 && input != noResultStr) {
-                    this.showItem(this.words[i], dropdown);
-                    numShown += 1;
+                    if (this.words[i].english.toUpperCase()[0] == input.toUpperCase()[0]) {
+                        priorityWords.push(this.words[i]);
+                    } else {
+                        similarWords.push(this.words[i]);
+                    }
+                    hasResult = 1;
                 }
             }
-            if (!numShown > 0) {
+            if (!hasResult) {
                 this.showItem(new Word(noResultStr, "", ""), dropdown);
+            } else {
+                var i;
+                for (i = 0; i < priorityWords.length; i++) {
+                    this.showItem(priorityWords[i], dropdown);
+                }
+                for (i = 0; i < similarWords.length && i < this.maxDropdownSize - priorityWords.length; i++) {
+                    this.showItem(similarWords[i], dropdown);
+                }
             }
         }
     }
