@@ -1,3 +1,7 @@
+"""This script takes in a formatted text file containing html elements and convert it to JS file of word objects.
+Took around 2 hours to copy, format the text file, and tweak the code
+"""
+
 
 def getRawData(fileName: str):
     data = []
@@ -8,15 +12,23 @@ def getRawData(fileName: str):
 
 
 def writeJS(data):
-    letter_break = "---" # In the raw file, breaks of the form "---A" will be present to section the data
+    # In the raw file, breaks of the form "@A" will be present to section the data
+    letter_break = "@"
     href_start = "href="
     href_end = '"'
     word_start = ">"
     word_end = "<"
+    extra_info_start = "["
+    extra_info_end = "]"
     codeLines = ["function loadData() {", "return ["]
     for line in data:
         if line.startswith(letter_break):
-            codeLines.append("//{}".format(line[len(letter_break) + 1]))
+            codeLines.append("")
+            codeLines.append(
+                "//{} ========================================================="
+                .format(line[len(letter_break)])
+            )
+            continue
         try:
             if line.find("approx") != -1:
                 af = 2
@@ -28,21 +40,39 @@ def writeJS(data):
             # Get word
             word_start_loc = line.index(
                 word_start, href_start_loc) + len(word_start)
+            if line[word_start_loc] == word_end:
+                word_start_loc = line.index(
+                    word_start, word_start_loc + 2) + len(word_start)
             word_end_loc = line.index(word_end, word_start_loc)
-            word = line[word_start_loc: word_end_loc]
+            word = line[word_start_loc: word_end_loc].lower()
+            assert word != " "
+            word = word.replace('"', "'")
+            if "-[#" in word:
+                word = word[:word.index("-[#")]
+            # Get extra info (if available)
+            if line.find(extra_info_start, word_end_loc) != -1:
+                extra_info_start_loc = line.index(
+                    extra_info_start, word_end_loc) + len(extra_info_start)
+                extra_info_end_loc = line.index(
+                    extra_info_end, extra_info_start_loc)
+                extra_info = " " + \
+                    line[extra_info_start_loc - 1: extra_info_end_loc + 1]
+                # if "lexicalized" in extra_info:
+                #     extra_info = ""
+            else:
+                extra_info = ""
             # Create JS code line
             codeLines.append(
-                'new Word("{0}", "{1}", "{2}"),'.format(word, url, ""))
-        except ValueError:
+                'new Word("{0}", "{1}", "{2}"),'.format(word + extra_info, url, ""))
+        except (ValueError, AssertionError):
             print("Skipped: {}".format(line))
 
     codeLines.append("]")
     codeLines.append("}")
     code = "\n".join(codeLines)
-    # print(code)
     with open("allWords.js", "w") as f:
         f.write(code)
-    
+
     print("JavaScript File created")
 
 

@@ -4,6 +4,7 @@ class Searcher {
     constructor() {
         console.log("Search bar constructed");
         this.words = loadData();
+        this.maxDropdownSize = 20;
 
     }
 
@@ -13,23 +14,22 @@ class Searcher {
 
     filterFunction() {
         var noResultStr = "No Translation Available";
-        var isResultExist = 0;
+        var numShown = 0;
         var dropdown = document.getElementById("theDropdown");
         var input = document.getElementById("searchField").value;
-        var filter;
 
         // Use jQuery to reset the drop down
         $("#theDropdown").empty();
 
         // Show items that are relevant to the user input
         if (input != "") {
-            for (var i = 0; i < this.words.length; i++) {
+            for (var i = 0; i < this.words.length && numShown <= this.maxDropdownSize; i++) {
                 if (this.words[i].english.toUpperCase().indexOf(input.toUpperCase()) > -1 && input != noResultStr) {
                     this.showItem(this.words[i], dropdown);
-                    isResultExist = 1;
+                    numShown += 1;
                 }
             }
-            if (!isResultExist) {
+            if (!numShown > 0) {
                 this.showItem(new Word(noResultStr, "", ""), dropdown);
             }
         }

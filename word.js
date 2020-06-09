@@ -1,5 +1,5 @@
 class Word {
-    constructor(english, chinese, url) {
+    constructor(english, url, chinese) {
         this.english = english;
         this.chinese = chinese;
         this.url = url;
