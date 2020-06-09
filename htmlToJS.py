@@ -12,6 +12,7 @@ def getRawData(fileName: str):
 
 
 def writeJS(data):
+    js_line_format = 'new Word("{0}", "{1}", "{2}"),'
     # In the raw file, breaks of the form "@A" will be present to section the data
     letter_break = "@"
     href_start = "href="
@@ -63,7 +64,7 @@ def writeJS(data):
                 extra_info = ""
             # Create JS code line
             codeLines.append(
-                'new Word("{0}", "{1}", "{2}"),'.format(word + extra_info, url, ""))
+                js_line_format.format(word + extra_info, url, ""))
         except (ValueError, AssertionError):
             print("Skipped: {}".format(line))
 

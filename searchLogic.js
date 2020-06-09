@@ -4,7 +4,7 @@ class Searcher {
     constructor() {
         console.log("Search bar constructed");
         this.words = loadData();
-        this.maxDropdownSize = 20;
+        this.maxDropdownSize = 15;
 
     }
 
@@ -18,8 +18,7 @@ class Searcher {
         var dropdown = document.getElementById("theDropdown");
         var input = document.getElementById("searchField").value;
 
-        // Use jQuery to reset the drop down
-        $("#theDropdown").empty();
+        this.clearDropdown();
 
         // Show items that are relevant to the user input
         if (input != "") {
@@ -40,7 +39,14 @@ class Searcher {
         var newLabel = document.createTextNode(word.english);
         newItem.appendChild(newLabel);
         newItem.title = word.chinese;
-        // newItem.href = word.url;
+        newItem.href = word.url;
+        newItem.target = "webframe";
+        newItem.onclick = this.clearDropdown;
         dropdown.appendChild(newItem);
+    }
+
+    clearDropdown() {
+        // Use jQuery to reset the drop down
+        $("#theDropdown").empty();
     }
 }
